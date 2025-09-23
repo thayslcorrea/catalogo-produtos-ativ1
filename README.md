@@ -1,6 +1,6 @@
 # Catálogo de Produtos - Node.js + TypeScript + Express + PostgreSQL (Docker) + Prisma
 
-A explicação em vídeo está no projeto com o nome de: "Gravação de Tela 2025-09-23 às 19.58.51"
+A explicação em vídeo: https://drive.google.com/file/d/1WhOiNwdEV3DSPVgP6CzVQt6551dOjfHE/view?usp=sharing
 
 ## Pré-requisitos
 
