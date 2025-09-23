@@ -13,7 +13,7 @@ A explicação em vídeo: https://drive.google.com/file/d/1WhOiNwdEV3DSPVgP6CzVQ
 ## 1. Clonar o repositório
 
 ```bash
-git clone https://github.com/thayslcorrea/catalogo-produtos-ativ1
+git clone https://github.com/thayslcorrea/catalogo-produtos-ativ1.git
 cd catalogo-produtos-ativ1
 ```
 
