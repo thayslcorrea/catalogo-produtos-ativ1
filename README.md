@@ -1,12 +1,9 @@
-# Catálogo de Produtos - Node.js + TypeScript + Express + PostgreSQL (Docker) + Prisma
-
-A explicação em vídeo: https://drive.google.com/file/d/1WhOiNwdEV3DSPVgP6CzVQt6551dOjfHE/view?usp=sharing
-
 ## Pré-requisitos
 
 * Docker & Docker Compose instalados
 * Node.js (v18+ recomendado)
 * npm (vem junto com Node.js)
+* Insomnia ou Postman (opcional, para testar endpoints)
 
 ---
 
@@ -21,38 +18,17 @@ cd catalogo-produtos-ativ1
 
 ## 2. Configurar variáveis de ambiente
 
-Copie o arquivo de exemplo e edite se necessário:
-
 ```bash
 cp .env.example .env
 ```
-
-Conteúdo do `.env`:
-
-```
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-POSTGRES_DB=catalogo_db
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/catalogo_db?schema=public
-PORT=3333
-```
-
 ---
 
 ## 3. Subir o container do PostgreSQL
 
 ```bash
 docker compose up -d
-```
-
-Verifique se o container está rodando:
-
-```bash
 docker ps
 ```
-
-> Observação: remova `version:` do `docker-compose.yml` se estiver presente.
-
 ---
 
 ## 4. Instalar dependências do projeto
@@ -65,19 +41,13 @@ npm install
 
 ## 5. Criar o banco de dados (caso não exista)
 
-Entre no container:
-
 ```bash
 docker ps  # veja o nome do container, ex: catalogo-produtos-db-1
-```
-
-```bash
 docker exec -it <NOME_CONTAINER> psql -U postgres
 ```
 
-Dentro do psql:
-
-```sql
+Dentro do SQL:
+```bash
 CREATE DATABASE catalogo_db;
 \q
 ```
@@ -97,48 +67,29 @@ npx prisma migrate dev --name init
 ```bash
 npm run seed
 ```
+
 ---
 
-## 8. Rodar servidor Express
+## 8. Popular banco com seed
 
 ```bash
 npm run dev
 ```
 
-O servidor vai rodar em: `http://localhost:3333`
-
 ---
 
-## 9. Endpoints disponíveis
+## 9. Endpoints disponíveis e status HTTP esperados
 
-* **GET /** → status da API
-* **GET /products** → lista todos produtos
-* **GET /products/\:id** → retorna produto por id
-* **POST /products** → cria um produto
+GET     /	            -   Status da API	            -   200 OK
+GET	    /products	    -   Lista todos os produtos	    -   200 OK
+GET	    /products/:id	- Retorna produto por ID	    - 200 OK / 404 Not Found
+DELETE	/products/:id	- Remove um produto	            204 No Content / 404  Not Found
 
-Exemplo de GET de todos produtos com curl:
+POST	/products	    - Cria um produto	            - 201 Created / 400 Bad Request	
+Payload de exemplo: { "title": "Caneta", "description": "Azul", "price": 2.5 }
 
-```bash
-curl http://localhost:3333/products
-```
+PUT	    /products/:id	- Atualiza um produto	        - 200 OK / 400 / 404	
+Payload de exemplo: { "title": "Caneta", "description": "Vermelha", "price": 3.0 }
 
----
-
-## 10. Testando com Insomnia
-
-Crie requisições:
-
-* GET `/`
-* GET `/products`
-* GET `/products/1`
-* POST `/products` (JSON com `title`, `description`, `price`)
-
----
-
-## 11. Prisma Studio
-
-Para visualizar os dados no banco:
-
-```bash
-npx prisma studio
-```
+Possíveis status de erro adicionais:
+500 Internal Server Error → quando ocorre falha no servidor ou no banco de dados.

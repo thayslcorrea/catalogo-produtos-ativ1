@@ -1,27 +1,21 @@
-import express from "express"
-import { PrismaClient } from "@prisma/client"
+import express from 'express'
+import cors from 'cors'
+import dotenv from 'dotenv'
+import productsRouter from './routes/products'
+
+dotenv.config()
 
 const app = express()
-const prisma = new PrismaClient()
+const PORT = process.env.PORT ?? 3333
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN ?? 'http://localhost:5173'
 
+app.use(cors({ origin: ALLOWED_ORIGIN }))
 app.use(express.json())
 
-app.get("/", (req, res) => {
-  res.json({ status: "ok" })
-})
+app.use('/products', productsRouter)
 
-app.get("/products", async (req, res) => {
-  const products = await prisma.product.findMany()
-  res.json(products)
-})
+app.get('/', (req, res) => res.json({ status: 'ok' }))
 
-app.get("/products/:id", async (req, res) => {
-  const id = Number(req.params.id)
-  const product = await prisma.product.findUnique({ where: { id } })
-  if (!product) return res.status(404).json({ error: "Produto não encontrado" })
-  res.json(product)
-})
-
-app.listen(process.env.PORT || 3333, () => {
-  console.log(`🚀 Server running on port ${process.env.PORT || 3333}`)
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`)
 })

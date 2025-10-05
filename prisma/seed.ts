@@ -1,54 +1,55 @@
 import { PrismaClient } from '@prisma/client'
-import dotenv from 'dotenv'
-
-
-dotenv.config()
-
-
 const prisma = new PrismaClient()
 
 
 async function main() {
-    const products = [
+    const existing = await prisma.product.count()
+    if (existing > 0) {
+        console.log('Seed skipped: products already exist')
+        return
+    }
+
+
+    const items = [
         {
-            title: 'Câmera de Segurança Wi‑Fi 1080p',
-            description: 'Câmera externa resistente à água, visão noturna e detecção de movimento.',
-            price: 249.90
+            title: 'Camiseta Azul',
+            description: 'Camiseta 100% algodão, tamanho M',
+            imageUrl: 'https://example.com/camiseta-azul.jpg',
+            price: 49.9
         },
         {
-            title: 'Sensor de Movimento PIR',
-            description: 'Sensor para automação residencial, fácil integração com microcontroladores.',
-            price: 39.5
-        },
-        {
-            title: 'Roteador Mesh Dual Band',
-            description: 'Cobertura estendida, até 3.0Gbps para redes domésticas.',
-            price: 499.0
-        },
-        {
-            title: 'Sensor de Umidade do Solo',
-            description: 'Sensor analógico para monitoramento de plantas em jardins e hortas.',
-            price: 14.75
-        },
-        {
-            title: 'Placa de Desenvolvimento ESP32',
-            description: 'Microcontrolador com Wi‑Fi e Bluetooth para projetos IoT.',
+            title: 'Caneca Ceramic',
+            description: 'Caneca de cerâmica branca 300ml',
+            imageUrl: 'https://example.com/caneca.jpg',
             price: 29.9
+        },
+        {
+            title: 'Mouse Gamer',
+            description: 'Mouse com DPI ajustável e iluminação RGB',
+            imageUrl: 'https://example.com/mouse.jpg',
+            price: 129.99
+        },
+        {
+            title: 'Teclado Mecânico',
+            description: 'Switches azuis e retroiluminação',
+            imageUrl: 'https://example.com/teclado.jpg',
+            price: 349.9
+        },
+        {
+            title: 'Mochila 20L',
+            description: 'Mochila resistente, ideal para dia a dia',
+            imageUrl: 'https://example.com/mochila.jpg',
+            price: 159.0
         }
     ]
 
 
-    // Limpa tabela (opcional) e insere
-    await prisma.product.deleteMany()
-
-
-    for (const p of products) {
-        // Prisma espera Decimal para o campo Decimal; passar number funciona, prisma converte.
-        await prisma.product.create({ data: p })
+    for (const item of items) {
+        await prisma.product.create({ data: item })
     }
 
 
-    console.log('Seed finalizada: inseridos', products.length, 'produtos')
+    console.log('Seed finished')
 }
 
 
